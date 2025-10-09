@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-/* --- Doubly Linked List (DLL) --- */
+
 struct DNode {
     int data;
     DNode* prev;
@@ -210,4 +210,5 @@ int main() {
     cout << "Program ended.\n";
     return 0;
 }
+
 
