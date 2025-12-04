@@ -1,39 +1,54 @@
-//push_front.c
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+using namespace std;
 
-struct Node { int data; struct Node* next; };
+class Node {
+public:
+    int data;
+    Node* next;
 
-struct Node* createNode(int d){
-    struct Node* n = malloc(sizeof(struct Node));
-    if (!n) { perror("malloc"); exit(EXIT_FAILURE); }
-    n->data = d; n->next = NULL; return n;
+    Node(int d) {
+        data = d;
+        next = nullptr;
+    }
+};
+
+// insert at front
+void push_front(Node*& head, int data) {
+    Node* n = new Node(data);
+    n->next = head;
+    head = n;
 }
 
-void push_front(struct Node** headRef, int data){
-    struct Node* n = createNode(data);
-    n->next = *headRef;
-    *headRef = n;
+void printList(Node* head) {
+    while(head) {
+        cout << head->data << " -> ";
+        head = head->next;
+    }
+    cout << "NULL" << endl;
 }
 
-void printList(struct Node* head){
-    while(head){ printf("%d -> ", head->data); head = head->next; }
-    printf("NULL\n");
+void freeList(Node*& head) {
+    Node* cur = head;
+    while(cur) {
+        Node* nxt = cur->next;
+        delete cur;
+        cur = nxt;
+    }
+    head = nullptr;
 }
 
-void freeList(struct Node** headRef){
-    struct Node* cur = *headRef;
-    while(cur){ struct Node* nxt = cur->next; free(cur); cur = nxt; }
-    *headRef = NULL;
-}
+int main() {
+    Node* head = nullptr;
 
-int main(){
-    struct Node* head = NULL;
-    push_front(&head, 30);
-    push_front(&head, 20);
-    push_front(&head, 10);
-    printf("After push_front calls:\n");
+    push_front(head, 30);
+    push_front(head, 20);
+    push_front(head, 10);
+
+    cout << "After push_front calls:\n";
     printList(head);
-    freeList(&head);
+
+    freeList(head);
+
     return 0;
 }
+
