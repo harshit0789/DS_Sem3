@@ -1,45 +1,35 @@
-//delete_front.c
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+using namespace std;
 
-struct Node { int data; struct Node* next; };
+class Node {
+public:
+    int data;
+    Node* next;
+    Node(int d){ data = d; next = NULL; }
+};
 
-struct Node* createNode(int d){
-    struct Node* n = malloc(sizeof(struct Node));
-    if (!n) { perror("malloc"); exit(EXIT_FAILURE); }
-    n->data = d; n->next = NULL; return n;
+int main() {
+    // Example list
+    Node* head = new Node(5);
+    head->next = new Node(10);
+    head->next->next = new Node(15);
+
+    if (head == NULL) {
+        cout << "List is empty!";
+        return 0;
+    }
+
+    Node* temp = head;
+    head = head->next;
+    cout << "Deleted: " << temp->data << endl;
+    delete temp;
+
+    cout << "Updated List: ";
+    Node* t = head;
+    while (t) {
+        cout << t->data << " -> ";
+        t = t->next;
+    }
+    cout << "NULL";
 }
 
-void push_front(struct Node** headRef, int data){
-    struct Node* n = createNode(data); n->next = *headRef; *headRef = n;
-}
-
-void deleteFront(struct Node** headRef){
-    if (*headRef == NULL) return;
-    struct Node* tmp = *headRef;
-    *headRef = tmp->next;
-    free(tmp);
-}
-
-void printList(struct Node* head){
-    while(head){ printf("%d -> ", head->data); head = head->next; }
-    printf("NULL\n");
-}
-
-void freeList(struct Node** headRef){
-    struct Node* cur = *headRef;
-    while(cur){ struct Node* nxt = cur->next; free(cur); cur = nxt; }
-    *headRef = NULL;
-}
-
-int main(){
-    struct Node* head = NULL;
-    push_front(&head, 30);
-    push_front(&head, 20);
-    push_front(&head, 10);
-    printf("Before deleteFront:\n"); printList(head);
-    deleteFront(&head);
-    printf("After deleteFront:\n"); printList(head);
-    freeList(&head);
-    return 0;
-}
