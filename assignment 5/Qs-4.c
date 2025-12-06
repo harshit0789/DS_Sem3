@@ -1,4 +1,4 @@
-// AQ4_reverse_list.c#include <iostream>
+#include <iostream>
 #include <unordered_map>
 using namespace std;
 
@@ -19,3 +19,4 @@ int main() {
     cout << "No non-repeating element";
     return 0;
 }
+
