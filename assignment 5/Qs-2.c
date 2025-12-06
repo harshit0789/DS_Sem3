@@ -1,57 +1,69 @@
-//delete_occurrences.c
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+using namespace std;
 
-struct Node { int data; struct Node* next; };
+class Node {
+public:
+    int data;
+    Node* next;
 
-struct Node* createNode(int d){ struct Node* n = malloc(sizeof(struct Node)); if(!n){ perror("malloc"); exit(EXIT_FAILURE);} n->data=d; n->next=NULL; return n; }
+    Node(int d) {
+        data = d;
+        next = NULL;
+    }
+};
 
-void push_end(struct Node** headRef, int data){
-    struct Node* n = createNode(data);
-    if(*headRef==NULL){ *headRef = n; return; }
-    struct Node* cur = *headRef; while(cur->next) cur = cur->next; cur->next = n;
-}
+int main() {
 
-int deleteOccurrences(struct Node** headRef, int key){
+    // Creating the sample list: 1->2->1->2->1->3->1
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(1);
+    head->next->next->next = new Node(2);
+    head->next->next->next->next = new Node(1);
+    head->next->next->next->next->next = new Node(3);
+    head->next->next->next->next->next->next = new Node(1);
+
+    int key = 1;
     int count = 0;
-    /* remove matching heads */
-    while(*headRef && (*headRef)->data == key){
-        struct Node* tmp = *headRef;
-        *headRef = tmp->next;
-        free(tmp);
+
+    // Step 1: Remove all occurrences at the start
+    while (head != NULL && head->data == key) {
+        Node* del = head;
+        head = head->next;
+        delete del;
         count++;
     }
-    struct Node* cur = *headRef;
-    while(cur && cur->next){
-        if (cur->next->data == key){
-            struct Node* tmp = cur->next;
-            cur->next = tmp->next;
-            free(tmp);
-            count++;
-        } else cur = cur->next;
+
+    // If list becomes empty
+    if (head == NULL) {
+        cout << "Count: " << count << "\nUpdated List: (empty)";
+        return 0;
     }
-    return count;
-}
 
-void printList(struct Node* head){ while(head){ printf("%d -> ", head->data); head=head->next; } printf("NULL\n"); }
+    // Step 2: Remove from remaining list
+    Node* temp = head;
 
-void freeList(struct Node** headRef){ struct Node* cur=*headRef; while(cur){ struct Node* nxt=cur->next; free(cur); cur=nxt;} *headRef=NULL; }
+    while (temp->next != NULL) {
+        if (temp->next->data == key) {
+            Node* del = temp->next;
+            temp->next = temp->next->next;
+            delete del;
+            count++;
+        } else {
+            temp = temp->next;
+        }
+    }
 
-int main(){
-    struct Node* head = NULL;
-    push_end(&head, 1);
-    push_end(&head, 2);
-    push_end(&head, 1);
-    push_end(&head, 2);
-    push_end(&head, 1);
-    push_end(&head, 3);
-    push_end(&head, 1);
+    cout << "Count: " << count << endl;
 
-    printf("Original list:\n"); printList(head);
-    int key = 1;
-    int removed = deleteOccurrences(&head, key);
-    printf("Removed %d occurrences of %d\n", removed, key);
-    printf("Updated list:\n"); printList(head);
-    freeList(&head);
+    cout << "Updated Linked List: ";
+    temp = head;
+    while (temp != NULL) {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+
     return 0;
 }
+
+
